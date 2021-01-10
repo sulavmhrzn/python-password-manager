@@ -21,7 +21,11 @@ def create_table():
             sec_password varchar(200) not null
         )
         """
-        cur.execute(query)
+        try:
+            cur.execute(query)
+            print("Table created.")
+        except psycopg2.Error as err:
+            raise err
 
 
 def insert_into_table(url, application_name, username, password):
@@ -32,6 +36,7 @@ def insert_into_table(url, application_name, username, password):
     with database as cur:
         try:
             cur.execute(query, (url, application_name, username, password))
+            print("Inserted into db.")
         except psycopg2.Error as err:
             raise err
 
@@ -60,5 +65,19 @@ def get_one(application_name=None, url=None):
             cur.execute(query, (application_name, url))
             result = cur.fetchall()
             return result
+        except psycopg2.Error as err:
+            raise err
+
+
+def remove_application(application_name=None, url=None):
+    query = """
+    delete from passwords
+    where application_name = (%s)
+    or url = (%s)
+    """
+    with database as cur:
+        try:
+            cur.execute(query, (application_name, url))
+            print("Application deleted")
         except psycopg2.Error as err:
             raise err
