@@ -1,0 +1,25 @@
+import psycopg2 as psql
+
+
+class Database:
+    def __init__(self, database, user, password, host="localhost", port=5432):
+        self.database = database
+        self.user = user
+        self.password = password
+        self.host = host
+        self.port = port
+        self.connection = None
+
+    def __enter__(self):
+        self.connection = psql.connect(
+            database=self.database,
+            user=self.user,
+            password=self.password,
+            host=self.host,
+        )
+        self.cursor = self.connection.cursor()
+        return self.cursor
+
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        self.connection.commit()
+        self.connection.close()
