@@ -1,6 +1,5 @@
 import psycopg2
-from database_connection import Database
-from random_password import random_password
+from .database_connection import Database
 
 database_name = "password_manager"
 user = "postgres"
